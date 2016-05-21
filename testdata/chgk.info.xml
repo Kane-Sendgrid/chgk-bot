@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tournament>
+<Id>20646</Id>
+<ParentId>1850</ParentId>
+<Title>3 тур</Title>
+<Number>3</Number>
+<TextId>lvovzi15.3</TextId>
+<QuestionsNum>15</QuestionsNum>
+<Complexity/>
+<Type>Т</Type>
+<Copyright/>
+<Info>Тестеры: Станислав Мереминский, Антон Тахтаров, Константин Сахаров,
+Александр Коробейников, Александр Либер, Александр Ведехин, Игорь
+Тюнькин.</Info>
+<URL>/znatoki/boris/reports/201501Lvov.html</URL>
+<FileName>lvovzi15.3</FileName>
+<RatingId/>
+<Editors>Дмитрий Стрильчук, Владимир Дудчак</Editors>
+<EnteredBy/>
+<LastUpdated>2016-02-13 03:01:25</LastUpdated>
+<PlayedAt>2015-01-17</PlayedAt>
+<PlayedAt2/>
+<KandId/>
+<CreatedAt>2016-02-13</CreatedAt>
+<ChildrenNum>0</ChildrenNum>
+<question>
+<QuestionId>296803</QuestionId>
+<ParentId>20646</ParentId>
+<Number>5</Number>
+<Type>Ч</Type>
+<TypeNum>1</TypeNum>
+<TextId>lvovzi15.3-5</TextId>
+<Question>(pic: 20150230.jpg)
+   Перед вами фрагмент кадра из фильма, на котором видна часть его
+названия. Назовите двух человек, о которых повествует этот фильм.</Question>
+<Answer>Тео и Винсент Ван Гоги.</Answer>
+<PassCriteria/>
+<Authors>Дмитрий Стрильчук, Владимир Дудчак</Authors>
+<Sources>Фильм &quot;Винсент и Тео&quot; (1990).</Sources>
+<Comments>На раздатке - не артикль, а часть имени &quot;Тео&quot;. Кадр оформлен в стиле
+картин Ван Гога.</Comments>
+<Rating/>
+<RatingNumber/>
+<Complexity/>
+<Topic/>
+<ProcessedBySearch/>
+<Notices>
+</Notices>
+</question>
+<question>
+<QuestionId>296804</QuestionId>
+<ParentId>20646</ParentId>
+<Number>6</Number>
+<Type>Ч</Type>
+<TypeNum>1</TypeNum>
+<TextId>lvovzi15.3-6</TextId>
+<Question>(pic: 20150231.jpg)
+   Один из персонажей фильма &quot;Винсент и Тео&quot; говорит, что у людей
+возникают проблемы с произношением его фамилии, и многие коверкают ее
+вплоть до этого слова. Напишите фамилию персонажа и это слово.</Question>
+<Answer>Гаше, клише.</Answer>
+<PassCriteria/>
+<Authors>Дмитрий Стрильчук, Владимир Дудчак</Authors>
+<Sources>Фильм &quot;Винсент и Тео&quot; (1990).</Sources>
+<Comments>Доктор Гаше - лечащий врач Ван Гога, запечатлен на одной из самых
+известных его картин. Текст на раздатке написан в зеркальном отражении,
+подобно типографскому клише.</Comments>
+<Rating/>
+<RatingNumber/>
+<Complexity/>
+<Topic/>
+<ProcessedBySearch/>
+<Notices>
+</Notices>
+</question>
+<question>
+<QuestionId>296805</QuestionId>
+<ParentId>20646</ParentId>
+<Number>7</Number>
+<Type>Ч</Type>
+<TypeNum>1</TypeNum>
+<TextId>lvovzi15.3-7</TextId>
+<Question>Главный герой рассказа Виктора Губова под названием &quot;ОНА&quot; -
+преподаватель физики, доведенный своими студентами до самоубийства. С
+НЕЙ в рассказе сравнивается кривая улыбка героя, оставшаяся на лице
+после произнесенной шутки. Назовите ЕЕ двумя словами.</Question>
+<Answer>Петля гистерезиса.</Answer>
+<PassCriteria/>
+<Authors>Дмитрий Стрильчук, Владимир Дудчак</Authors>
+<Sources>   1. В. Губов. Избранное.
+   2. http://ru.wikipedia.org/wiki/Гистерезис</Sources>
+<Comments>&quot;Студенты хорошо знали эту нелепую гримасу, когда один уз уголков губ
+поднимался - а другой, словно в противовес первому, опускался, сильно
+походя на петлю гистерезиса из столь ненавистного им учебника&quot;. В конце
+рассказа главный герой вешается.
+   z-checkdb: Писатель Виктор Губов выдуман автором вопроса.</Comments>
+<Rating/>
+<RatingNumber/>
+<Complexity/>
+<Topic/>
+<ProcessedBySearch/>
+<Notices>
+</Notices>
+</question>
+<question>
+<QuestionId>296806</QuestionId>
+<ParentId>20646</ParentId>
+<Number>8</Number>
+<Type>Ч</Type>
+<TypeNum>1</TypeNum>
+<TextId>lvovzi15.3-8</TextId>
+<Question>Герой фильма &quot;Далласский клуб покупателей&quot; говорит, что не мог заболеть
+СПИДом, поскольку он не гей и ему по вкусу девушки. Ответьте, каким
+словом он называет блондинку и каким - брюнетку, с которыми провел ночь.</Question>
+<Answer>Соль, перец.</Answer>
+<PassCriteria>Солонка, перечница.</PassCriteria>
+<Authors>Дмитрий Стрильчук, Владимир Дудчак</Authors>
+<Sources>Фильм &quot;Далласский клуб покупателей&quot; (2013), 15-я минута.</Sources>
+<Comments>&quot;По вкусу&quot; сказано не случайно.</Comments>
+<Rating/>
+<RatingNumber/>
+<Complexity/>
+<Topic/>
+<ProcessedBySearch/>
+<Notices>
+</Notices>
+</question>
+<question>
+<QuestionId>296807</QuestionId>
+<ParentId>20646</ParentId>
+<Number>9</Number>
+<Type>Ч</Type>
+<TypeNum>1</TypeNum>
+<TextId>lvovzi15.3-9</TextId>
+<Question>(pic: 20150232.jpg)
+   Какой объект так зашифровал автор вопроса?</Question>
+<Answer>Эребус.</Answer>
+<PassCriteria/>
+<Authors>Дмитрий Стрильчук, Владимир Дудчак</Authors>
+<Sources>Ребус автора вопроса.</Sources>
+<Comments>Сначала &quot;Э&quot;, а потом весь ребус целиком.</Comments>
+<Rating/>
+<RatingNumber/>
+<Complexity/>
+<Topic/>
+<ProcessedBySearch/>
+<Notices>
+</Notices>
+</question>
+<question>
+<QuestionId>296808</QuestionId>
+<ParentId>20646</ParentId>
+<Number>10</Number>
+<Type>Ч</Type>
+<TypeNum>1</TypeNum>
+<TextId>lvovzi15.3-10</TextId>
+<Question>На какой вопрос из трех слов известный автор ответил так: &quot;я Отчина и
+лава&quot;?</Question>
+<Answer>Авалиани, что я?</Answer>
+<PassCriteria/>
+<Authors>Дмитрий Стрильчук, Владимир Дудчак</Authors>
+<Sources>Д. Авалиани. Зов ангелов: &quot;О, Русь! Сурово лег навоз&quot;.
+http://www.flibusta.net/b/154101/read</Sources>
+<Comments>Дмитрий Авалиани - знаменитый палиндромист.</Comments>
+<Rating/>
+<RatingNumber/>
+<Complexity/>
+<Topic/>
+<ProcessedBySearch/>
+<Notices>
+</Notices>
+</question>
+<question>
+<QuestionId>296809</QuestionId>
+<ParentId>20646</ParentId>
+<Number>11</Number>
+<Type>Ч</Type>
+<TypeNum>1</TypeNum>
+<TextId>lvovzi15.3-11</TextId>
+<Question>В произведении Юрия Полякова герой говорит приятелю, что не собирается
+брать всю вину за преступление на себя, и упоминает этот предмет. В
+народе этот предмет называют &quot;тебе-мне&quot;. Назовите этот предмет
+максимально точно.</Question>
+<Answer>Двуручная пила.</Answer>
+<PassCriteria/>
+<Authors>Денис Рыбачук</Authors>
+<Sources>Ю. Поляков. Козленок в молоке. http://www.flibusta.net/b/43787/read</Sources>
+<Comments>Мол, вместе будем валить лес.</Comments>
+<Rating/>
+<RatingNumber/>
+<Complexity/>
+<Topic/>
+<ProcessedBySearch/>
+<Notices>
+</Notices>
+</question>
+<question>
+<QuestionId>296810</QuestionId>
+<ParentId>20646</ParentId>
+<Number>12</Number>
+<Type>Ч</Type>
+<TypeNum>1</TypeNum>
+<TextId>lvovzi15.3-12</TextId>
+<Question>Внимание, на этот вопрос принимаются два варианта ответа!
+   Герой Дэвида Джерролда изучает инопланетян. Протянув им свою ногу и
+убедившись, что инопланетяне не едят ее, герой называет этот вывод ИМ.
+Назовите ЕГО несколькими словами.</Question>
+<Answer>Гигантский прыжок [для] человечества.</Answer>
+<PassCriteria>Маленький шаг [для] человека.</PassCriteria>
+<Authors>Илья Кривохатько</Authors>
+<Sources>Д. Джерролд. Дело человека. http://www.flibusta.net/b/74396/read</Sources>
+<Comments>Отсылка к фразе Нила Армстронга. К сожалению, переводчик романа не понял
+юмора и написал &quot;гигантский шаг человечества&quot;.</Comments>
+<Rating/>
+<RatingNumber/>
+<Complexity/>
+<Topic/>
+<ProcessedBySearch/>
+<Notices>
+</Notices>
+</question>
+<question>
+<QuestionId>296811</QuestionId>
+<ParentId>20646</ParentId>
+<Number>13</Number>
+<Type>Ч</Type>
+<TypeNum>1</TypeNum>
+<TextId>lvovzi15.3-13</TextId>
+<Question>Рассказывают, как однажды палестинский террорист потерял сознание во
+время теракта. Едва очнувшись в больничной палате, он повелительно
+произнес: &quot;Вводите их всех!&quot;. Имел в виду он, конечно, не врачей и не
+родственников. А кого? Ответьте одним словом.</Question>
+<Answer>Гурий.</Answer>
+<PassCriteria>Девственниц.</PassCriteria>
+<Authors>Антон Волосатов</Authors>
+<Sources>http://www.anekdot.ru/id/407672/</Sources>
+<Comments>К всеобщему счастью, взрыватель не сработал, а злоумышленник от
+перенапряжения упал без чувств. Придя в себя, он решил, что уже
+находится в раю, и потребовал причитающихся ему по Корану 72 гурий.</Comments>
+<Rating/>
+<RatingNumber/>
+<Complexity/>
+<Topic/>
+<ProcessedBySearch/>
+<Notices>
+</Notices>
+</question>
+<question>
+<QuestionId>296812</QuestionId>
+<ParentId>20646</ParentId>
+<Number>14</Number>
+<Type>Ч</Type>
+<TypeNum>1</TypeNum>
+<TextId>lvovzi15.3-14</TextId>
+<Question>В 1928 году экспедиция Юрия Билибина дошла до реки Албаныкан, которую
+ошибочно приняла за конечную точку своей экспедиции. Но путь пришлось
+продолжить. Впоследствии реку назвали ОНА. В известном произведении ОНА
+символизирует нос. Назовите ЕЕ.</Question>
+<Answer>Запятая.</Answer>
+<PassCriteria/>
+<Authors>Дмитрий Стрильчук, Владимир Дудчак</Authors>
+<Sources>http://ru.wikipedia.org/wiki/Запятая_(река)</Sources>
+<Comments/>
+<Rating/>
+<RatingNumber/>
+<Complexity/>
+<Topic/>
+<ProcessedBySearch/>
+<Notices>
+</Notices>
+</question>
+<question>
+<QuestionId>296813</QuestionId>
+<ParentId>20646</ParentId>
+<Number>15</Number>
+<Type>Ч</Type>
+<TypeNum>1</TypeNum>
+<TextId>lvovzi15.3-15</TextId>
+<Question>Намекая на распущенность одного из римских пап, остряки несколько
+изменили его фамилию. Напишите эту измененную фамилию.</Question>
+<Answer>Orgia.</Answer>
+<PassCriteria/>
+<Authors>Владимир Войтюк</Authors>
+<Sources>А. Махов. Тициан. http://www.flibusta.net/b/306133/read</Sources>
+<Comments>Это папа Александр VI Борджиа. Остряки убрали из его фамилии Borgia
+первую букву &quot;B&quot;.</Comments>
+<Rating/>
+<RatingNumber/>
+<Complexity/>
+<Topic/>
+<ProcessedBySearch/>
+<Notices>
+</Notices>
+</question>
+</tournament>
