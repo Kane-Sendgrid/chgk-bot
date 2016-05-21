@@ -1,0 +1,28 @@
+{
+	"ImportPath": "github.com/Kane-Sendgrid/chgk-bot",
+	"GoVersion": "go1.6",
+	"GodepVersion": "v70",
+	"Packages": [
+		"./..."
+	],
+	"Deps": [
+		{
+			"ImportPath": "github.com/danott/envflag",
+			"Comment": "0.0.1-9-gc87b0f9",
+			"Rev": "c87b0f97c5c99fc33850aee549a627cefa766bb6"
+		},
+		{
+			"ImportPath": "github.com/nlopes/slack",
+			"Comment": "v0.0.1-104-ge337a73",
+			"Rev": "e337a7316d3fe9aa55b7063035d6d32f3dbcaeb9"
+		},
+		{
+			"ImportPath": "golang.org/x/net/context",
+			"Rev": "2a35e686583654a1b89ca79c4ac78cb3d6529ca3"
+		},
+		{
+			"ImportPath": "golang.org/x/net/websocket",
+			"Rev": "2a35e686583654a1b89ca79c4ac78cb3d6529ca3"
+		}
+	]
+}

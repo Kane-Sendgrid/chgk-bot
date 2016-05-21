@@ -3,35 +3,25 @@ package main
 import (
 	"flag"
 	"fmt"
-	"time"
+	"strings"
 
-	"github.com/Kane-Sendgrid/chgk-bot/dbchgk"
+	"github.com/Kane-Sendgrid/chgk-bot/bot"
 	"github.com/danott/envflag"
 	"github.com/nlopes/slack"
 )
 
-func botMessage(rtm *slack.RTM, title, image string) {
-	params := slack.PostMessageParameters{
-		Attachments: []slack.Attachment{
-			slack.Attachment{
-				Color:    "#ff0000",
-				Title:    title,
-				ImageURL: image,
-			},
-		},
-	}
-	rtm.PostMessage("C1AL8DNMT", "", params)
-}
-
 func main() {
 	var token string
+	var outputdir string
 	flag.StringVar(&token, "token", "", "Slack token")
+	flag.StringVar(&outputdir, "outputdir", "", "Output dir")
 	envflag.Parse()
 	api := slack.New(token)
+	// api.InviteToTeam(teamName string, firstName string, lastName string, emailAddress string)
 	// api.GetChannelHistory("", slack.HistoryParameters)
-	api.SetDebug(true)
-
+	// api.SetDebug(true)
 	rtm := api.NewRTM()
+	bots := bot.NewChannelBots()
 	go rtm.ManageConnection()
 
 Loop:
@@ -50,31 +40,39 @@ Loop:
 				// rtm.SendMessage(rtm.NewOutgoingMessage("Hello world", "#general"))
 
 			case *slack.MessageEvent:
+				fmt.Println(ev.Channel)
+				b := bots.GetOrCreate(rtm, ev.Channel)
 				fmt.Printf("Message: %v\n", ev)
+				loText := strings.ToLower(ev.Msg.Text)
 				if ev.Msg.Text == "test" {
-					botMessage(rtm, "testimage", "")
+					b.BotMessage("testimage", "")
 				}
-				if ev.Msg.Text == "!начать" {
-					botMessage(rtm, "Начинаю новую игру...", "")
-					s := dbchgk.LoadSuite()
-					for _, q := range s.Questions {
-						fmt.Println(">>> Q", q.Question)
-						fmt.Println(">>> Q", q.Picture)
-						fmt.Println(">>> A", q.Answer)
-						botMessage(rtm, "ВОПРОС "+q.Question, q.Picture)
-						time.Sleep(5 * time.Second)
-						botMessage(rtm, "ОТВЕТ "+q.Answer, "")
-						time.Sleep(5 * time.Second)
-					}
+				if strings.HasPrefix(loText, "!начать") {
+					go b.StartGame(ev.Msg.Text)
 				}
-				if ev.Msg.Text == "!время" {
-					rtm.SendMessage(rtm.NewOutgoingMessage("Отсчет каждые 5 секунд", "C1AL8DNMT"))
-					go func() {
-						for {
-							time.Sleep(5 * time.Second)
-							rtm.SendMessage(rtm.NewOutgoingMessage("Тик...", "C1AL8DNMT"))
-						}
-					}()
+				if strings.HasPrefix(loText, "!счет") {
+					b.TellScore()
+				}
+				if strings.HasPrefix(loText, "!стоп") {
+					b.Cancel()
+				}
+				if strings.HasPrefix(loText, "!ответ") {
+					b.Answer()
+				}
+				if loText == "++" {
+					b.IncScoreRight()
+				}
+				if loText == "--" {
+					b.IncScoreWrong()
+				}
+				if ev.File != nil && strings.Contains(ev.File.Title, ".docx") {
+					b.SaveDoc(token, outputdir, ev.File)
+				}
+
+				if strings.HasPrefix(loText, "!вопрос") ||
+					strings.HasPrefix(loText, "?вопрос") ||
+					strings.HasPrefix(loText, "вопрос ") {
+					go b.StartTimer(ev.Msg.Text, "")
 				}
 			case *slack.PresenceChangeEvent:
 				// fmt.Printf("Presence Change: %v\n", ev)
