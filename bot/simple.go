@@ -28,10 +28,9 @@ func (b *Bot) StartGame(command string) {
 			b.BotMessage("Ошибка обработки запроса", "")
 		}
 	}()
-	b.BotMessage("Начинаю новую игру...", "")
+	b.BotMessage(fmt.Sprintf("Начинаю новую игру. Лимит времени %d минуты", int(b.delay1.Minutes()+1)), "")
 	b.scoreRight = 0
 	b.scoreWrong = 0
-	b.delay1 = 60 * time.Second
 	b.delay2 = 40 * time.Second
 	b.delay3 = 20 * time.Second
 	b.answerDelay = 15 * time.Second
@@ -65,47 +64,67 @@ func (b *Bot) StartGame(command string) {
 		fmt.Println(">>> Q", q.Picture)
 		fmt.Println(">>> A", q.Answer)
 		b.StartTimer("ВОПРОС №"+qNum+". "+q.Question, q.Picture)
-		<-b.answerChan
-		b.answerChan = make(chan bool)
+		b.WaitForAnswer()
 		b.BotMessage("ОТВЕТ "+q.Answer, "")
 		if len(q.Comments) > 0 {
 			b.BotMessage("Комментарий "+q.Comments, "")
 		}
-		b.BotMessage("Засчитать? ++ или --", "")
-		b.Sleep(b.questionDelay)
+		b.BotColorMessage("Засчитать? ++ или --", "", "#00ff00")
+		b.WaitForAnswer()
 	}
 
+}
+
+//SetDelay ...
+func (b *Bot) SetDelay(delay int) {
+	b.delay1 = time.Duration(delay-1) * time.Minute
+}
+
+//WaitForAnswer ...
+func (b *Bot) WaitForAnswer() {
+	<-b.answerChan
+	b.answerChan = make(chan bool)
 }
 
 //StartTimer ...
 func (b *Bot) StartTimer(question, picture string) {
 	b.BotMessage(question, picture)
-	b.BotMessage("Время!", "")
-	reason := b.Sleep(b.delay1)
+	b.BotColorMessage("Даю 30 секунд на чтение вопроса", "", "#00ff00")
+	reason := b.Sleep(30 * time.Second)
 	if reason != sleepReasonNormal {
 		return
 	}
-	b.BotMessage("Осталась 1 минута", "")
+	b.BotColorMessage("Время!", "", "#00ff00")
+	reason = b.Sleep(b.delay1)
+	if reason != sleepReasonNormal {
+		return
+	}
+	b.BotColorMessage("Осталась 1 минута", "", "#00ff00")
 	reason = b.Sleep(b.delay2)
 	if reason != sleepReasonNormal {
 		return
 	}
-	b.BotMessage("Осталось 20 секунд", "")
+	b.BotColorMessage("Осталось 20 секунд", "", "#00ff00")
 	b.BotMessage("Повторяю вопрос: "+question, picture)
 	reason = b.Sleep(b.delay3)
 	if reason != sleepReasonNormal {
 		return
 	}
-	b.BotMessage("Ваш ответ?", "")
+	b.BotColorMessage("Ваш ответ?", "", "#00ff00")
 }
 
 //BotMessage ...
 func (b *Bot) BotMessage(title, image string) {
+	b.BotColorMessage(title, image, "#ff0000")
+}
+
+//BotColorMessage ...
+func (b *Bot) BotColorMessage(title, image, color string) {
 	params := slack.PostMessageParameters{
 		Text: title,
 		Attachments: []slack.Attachment{
 			slack.Attachment{
-				Color: "#ff0000",
+				Color: color,
 				Title: title,
 				// Text:       "*" + title + "*",
 				ImageURL:   image,
@@ -120,7 +139,7 @@ func (b *Bot) BotMessage(title, image string) {
 func (b *Bot) Sleep(t time.Duration) int {
 	select {
 	case <-b.ctx.Done():
-		return sleepReasonNormal
+		return sleepReasonStop
 	case <-b.answerChan:
 		return sleepReasonAnswer
 	case <-time.After(t):
@@ -145,7 +164,7 @@ func (b *Bot) Cancel() {
 
 //TellScore ...
 func (b *Bot) TellScore() {
-	b.BotMessage(fmt.Sprintf("Счет (верно/неверно) %d / %d", b.scoreRight, b.scoreWrong), "")
+	b.BotColorMessage(fmt.Sprintf("Счет (верно/неверно) %d / %d", b.scoreRight, b.scoreWrong), "", "#00ff00")
 }
 
 //IncScoreRight ...

@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/Kane-Sendgrid/chgk-bot/bot"
@@ -63,11 +64,25 @@ Loop:
 				if strings.HasPrefix(loText, "!ответ") {
 					b.Answer()
 				}
+				if strings.HasPrefix(loText, "!время") {
+					tasks := strings.Split(loText, " ")
+					if len(tasks) == 2 {
+						delay, err := strconv.Atoi(tasks[1])
+						if err != nil {
+							b.BotMessage("Ошибка. Введите команду: !время ЧИСЛО", "")
+							continue
+						}
+						b.SetDelay(delay)
+						b.BotMessage(fmt.Sprintf("Установлено время игры %d минут", delay), "")
+					}
+				}
 				if loText == "++" {
 					b.IncScoreRight()
+					b.Answer()
 				}
 				if loText == "--" {
 					b.IncScoreWrong()
+					b.Answer()
 				}
 				if ev.File != nil && strings.Contains(ev.File.Title, ".docx") {
 					b.SaveDoc(token, outputdir, ev.File)
