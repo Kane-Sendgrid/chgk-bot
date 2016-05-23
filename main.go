@@ -12,12 +12,14 @@ import (
 
 func main() {
 	var token string
+	var adminToken string
 	var outputdir string
 	flag.StringVar(&token, "token", "", "Slack token")
+	flag.StringVar(&adminToken, "admintoken", "", "Slack token")
 	flag.StringVar(&outputdir, "outputdir", "", "Output dir")
 	envflag.Parse()
 	api := slack.New(token)
-	// api.InviteToTeam(teamName string, firstName string, lastName string, emailAddress string)
+	adminAPI := slack.New(adminToken)
 	// api.GetChannelHistory("", slack.HistoryParameters)
 	// api.SetDebug(true)
 	rtm := api.NewRTM()
@@ -45,9 +47,11 @@ Loop:
 				fmt.Printf("Message: %v\n", ev)
 				loText := strings.ToLower(ev.Msg.Text)
 				if ev.Msg.Text == "test" {
+					adminAPI.DeleteMessage(ev.Channel, ev.Msg.Timestamp)
 					b.BotMessage("testimage", "")
 				}
 				if strings.HasPrefix(loText, "!начать") {
+					adminAPI.DeleteMessage(ev.Channel, ev.Msg.Timestamp)
 					go b.StartGame(ev.Msg.Text)
 				}
 				if strings.HasPrefix(loText, "!счет") {
