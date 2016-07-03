@@ -24,6 +24,30 @@
 <CreatedAt>2016-02-13</CreatedAt>
 <ChildrenNum>0</ChildrenNum>
 <question>
+<QuestionId>123063</QuestionId>
+<ParentId>10998</ParentId>
+<Number>50</Number>
+<Type>Ч</Type>
+<TypeNum>1</TypeNum>
+<TextId>marafo10.1-50</TextId>
+<Question>
+(pic: 20100731.jpg) (pic: 20100732.jpg) Перед вами - фрагменты работ, присланных на конкурс. Назовите одним словом организатора этого конкурса.
+</Question>
+<Answer>Google.</Answer>
+<PassCriteria/>
+<Authors>Юлия Романовская (Одесса)</Authors>
+<Sources>
+http://www.tech-buzz.net/2009/11/15/doodle-4-google-9-year-old-wins-the-contest/
+</Sources>
+<Comments>Из фигурок складывается надпись.</Comments>
+<Rating/>
+<RatingNumber/>
+<Complexity/>
+<Topic/>
+<ProcessedBySearch/>
+<Notices></Notices>
+</question>
+<question>
 <QuestionId>296803</QuestionId>
 <ParentId>20646</ParentId>
 <Number>5</Number>

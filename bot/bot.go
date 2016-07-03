@@ -10,12 +10,15 @@ import (
 
 //Bot ...
 type Bot struct {
-	ctx        context.Context
-	cancel     context.CancelFunc
-	rtm        *slack.RTM
-	channel    string
-	scoreRight int
-	scoreWrong int
+	ctx             context.Context
+	cancel          context.CancelFunc
+	rtm             *slack.RTM
+	channel         string
+	captain         string
+	captainUsername string
+	totalQuestions  int
+	scoreRight      int
+	scoreWrong      int
 
 	delay1        time.Duration
 	delay2        time.Duration
@@ -67,4 +70,11 @@ func (cb *ChannelBots) GetOrCreate(rtm *slack.RTM, channel string) *Bot {
 		cb.lock.Unlock()
 	}
 	return bot
+}
+
+//Delete ...
+func (cb *ChannelBots) Delete(channel string) {
+	cb.lock.Lock()
+	delete(cb.bots, channel)
+	cb.lock.Unlock()
 }

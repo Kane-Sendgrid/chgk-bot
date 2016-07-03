@@ -2,7 +2,9 @@ package dbchgk
 
 import (
 	"encoding/xml"
+	"errors"
 	"fmt"
+	"html"
 	"io/ioutil"
 	"net/http"
 	"regexp"
@@ -11,13 +13,14 @@ import (
 	"github.com/Kane-Sendgrid/chgk-bot/strip"
 )
 
-var picRE = regexp.MustCompile(`\(pic: (.*)\)`)
+var picRE = regexp.MustCompile(`\(pic: (.*?)\)`)
 
 var kandQRE = regexp.MustCompile(`(?s)<strong>Вопрос \d+:(.+?)<div style="display:none`)
-var kandARE = regexp.MustCompile(`(?s)<strong>Ответ:<\/strong>(.+?)<a id=`)
+var kandARE = regexp.MustCompile(`(?s)<strong>Ответ.*?:<\/strong>(.+?)<a id=`)
 var kandIMGRE = regexp.MustCompile(`(?s)<img src = "(.+?)"`)
 
-var customQRE = regexp.MustCompile(`(?s)<p>(Вопрос)?\s*\d+\.(.*?)Ответ:`)
+var customQRE = regexp.MustCompile(`(?s)<p>(Вопрос)?\s*\d+\.(.*?)Ответ.*?:`)
+var customAddRE = regexp.MustCompile(`(?s)Автор: .*?<\/p>(.+)`)
 var customARE = regexp.MustCompile(`(?s)Ответ:(.*?)Автор`)
 var customIMGRE = regexp.MustCompile(`(?s)<img.*?src="(.*?)"`)
 
@@ -39,9 +42,9 @@ type Suite struct {
 }
 
 //LoadSuite ...
-func LoadSuite(url string) (*Suite, error) {
+func LoadSuite(url, gameType, cmd string) (*Suite, error) {
 	fmt.Println("LoadSuite url:", url)
-	if strings.Contains(url, "db.chgk.info") {
+	if strings.Contains(url, "db.chgk.info") || strings.Contains(url, "pda.baza-voprosov.ru") {
 		data, err := loadData(url + "/xml")
 		if err != nil {
 			return nil, err
@@ -51,6 +54,9 @@ func LoadSuite(url string) (*Suite, error) {
 	data, err := loadData(url)
 	if err != nil {
 		return nil, err
+	}
+	if gameType == "regex" {
+		return dbRegexp(url, data, cmd)
 	}
 
 	if strings.Contains(url, "kand.info") {
@@ -79,6 +85,7 @@ func dbCHGK(data []byte) (*Suite, error) {
 	s := &Suite{}
 	xml.Unmarshal(data, s)
 	for _, q := range s.Questions {
+		q.Question = strings.Replace(q.Question, "\n", " ", -1)
 		matches := picRE.FindAllStringSubmatch(q.Question, -1)
 		for _, m := range matches {
 			q.Picture = "http://db.chgk.info/images/db/" + m[1]
@@ -115,9 +122,7 @@ func dbCustom(url string, data []byte) (*Suite, error) {
 	url = url[0 : strings.LastIndex(url, "/")+1]
 	s := &Suite{}
 	str := string(data)
-	fmt.Println("data", str)
 	matches := customQRE.FindAllStringSubmatch(str, -1)
-	fmt.Println("question matches", matches)
 	for _, m := range matches {
 		images := customIMGRE.FindAllStringSubmatch(m[2], -1)
 		img := ""
@@ -125,13 +130,18 @@ func dbCustom(url string, data []byte) (*Suite, error) {
 			img = url + i[1]
 		}
 		// fmt.Println(">>>IMAGE", img)
+		// fmt.Println(m[2])
+		q := m[2]
+		addMatches := customAddRE.FindAllStringSubmatch(m[2], -1)
+		if addMatches != nil && len(addMatches[0][1]) > 0 {
+			q = addMatches[0][1]
+		}
 		s.Questions = append(s.Questions, &Question{
-			Question: sanitize(m[2]),
+			Question: sanitize(q),
 			Picture:  img,
 		})
 	}
 	matches = customARE.FindAllStringSubmatch(str, -1)
-	fmt.Println("answer matches", matches)
 	for i, m := range matches {
 		s.Questions[i].Answer = sanitize(m[1])
 	}
@@ -139,7 +149,51 @@ func dbCustom(url string, data []byte) (*Suite, error) {
 }
 
 func sanitize(s string) string {
+	s = strings.Replace(s, "<br>", "\n", -1)
+	s = strings.Replace(s, "<br/>", "\n", -1)
+	s = strings.Replace(s, "<br />", "\n", -1)
+	s = strings.Replace(s, "</p><p>", "\n", -1)
+	s = strings.Replace(s, "</li><li>", "\n", -1)
 	s = strip.StripTags(s)
 	s = strings.Replace(s, "&nbsp;", " ", -1)
+	s = strings.Replace(s, "&quot;", `"`, -1)
+	s = html.UnescapeString(s)
 	return s
+}
+
+func dbRegexp(url string, data []byte, cmd string) (*Suite, error) {
+	cmd = html.UnescapeString(cmd)
+	options := strings.Split(cmd, "~~")
+	if len(options) != 4 {
+		return nil, errors.New("Неправильное число аргументов: Пример !начать URL START_QUESTION_NUMBER~~QUESTION_REGEXP~~PIC_BASE_URL~~ANSWER_REGEXP")
+	}
+	fmt.Println(len(options))
+	qRegexp := regexp.MustCompile(options[1])
+	imgBaseURL := options[2]
+	aRegexp := regexp.MustCompile(options[3])
+	qPicRegexp := regexp.MustCompile(`(?s)<img.*?src\s?=\s?"(.+?)"`)
+
+	s := &Suite{}
+	str := string(data)
+	matches := qRegexp.FindAllStringSubmatch(str, -1)
+	for _, m := range matches {
+		q := m[1]
+		images := qPicRegexp.FindAllStringSubmatch(q, -1)
+		img := ""
+		for _, i := range images {
+			img = imgBaseURL + i[1]
+			q = img + "\n" + q
+		}
+
+		s.Questions = append(s.Questions, &Question{
+			Question: sanitize(q),
+			Picture:  img,
+		})
+	}
+	matches = aRegexp.FindAllStringSubmatch(str, -1)
+	for i, m := range matches {
+		s.Questions[i].Answer = sanitize(m[1])
+	}
+
+	return s, nil
 }

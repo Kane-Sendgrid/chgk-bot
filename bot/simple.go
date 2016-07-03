@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"path"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -22,9 +23,10 @@ const (
 )
 
 //StartGame ...
-func (b *Bot) StartGame(command string) {
+func (b *Bot) StartGame(command, gameType string) {
 	defer func() {
 		if r := recover(); r != nil {
+			fmt.Println(r)
 			b.BotMessage("Ошибка обработки запроса", "")
 		}
 	}()
@@ -43,17 +45,29 @@ func (b *Bot) StartGame(command string) {
 	// b.questionDelay = 1 * time.Second
 
 	options := strings.Split(command, " ")
+	startQuestion := 1
 	url := options[1]
+	if len(options) >= 3 {
+		var err error
+		startQuestion, err = strconv.Atoi(options[2])
+		if err != nil {
+			b.BotMessage("Ошибка: "+err.Error(), "")
+		}
+	}
 	url = url[1 : len(url)-1]
 	fmt.Println(options, url)
 
-	s, err := dbchgk.LoadSuite(url)
+	s, err := dbchgk.LoadSuite(url, gameType, command)
 	if err != nil {
 		b.BotMessage("Ошибка: "+err.Error(), "")
 		return
 	}
+	b.totalQuestions = len(s.Questions)
 	for i, q := range s.Questions {
 		qNum := strconv.Itoa(i + 1)
+		if i+1 < startQuestion {
+			continue
+		}
 		select {
 		case <-b.ctx.Done():
 			return
@@ -65,14 +79,15 @@ func (b *Bot) StartGame(command string) {
 		fmt.Println(">>> A", q.Answer)
 		b.StartTimer("ВОПРОС №"+qNum+". "+q.Question, q.Picture)
 		b.WaitForAnswer()
-		b.BotMessage("ОТВЕТ "+q.Answer, "")
+		b.BotColorMessage("ОТВЕТ "+q.Answer, "", "#ff0000")
 		if len(q.Comments) > 0 {
-			b.BotMessage("Комментарий "+q.Comments, "")
+			b.BotColorMessage("Комментарий "+q.Comments, "", "#ff0000")
 		}
-		b.BotColorMessage("Засчитать? ++ или --", "", "#00ff00")
+		b.BotColorMessage("Засчитать? ++ или --", "", "#ff0000")
 		b.WaitForAnswer()
 	}
-
+	b.BotColorMessage("Тур закончен, окончательный счет:", "", "#ff0000")
+	b.TellScore()
 }
 
 //SetDelay ...
@@ -88,9 +103,10 @@ func (b *Bot) WaitForAnswer() {
 
 //StartTimer ...
 func (b *Bot) StartTimer(question, picture string) {
-	b.BotMessage(question, picture)
-	b.BotColorMessage("Даю 30 секунд на чтение вопроса", "", "#00ff00")
-	reason := b.Sleep(30 * time.Second)
+	b.BotColorMessage("Задаю вопрос:", "", "#00ff00")
+	b.BotColorMessage(question, picture, "#ff0000")
+	b.BotColorMessage("Даю 20 секунд на чтение вопроса", "", "#00ff00")
+	reason := b.Sleep(20 * time.Second)
 	if reason != sleepReasonNormal {
 		return
 	}
@@ -105,7 +121,8 @@ func (b *Bot) StartTimer(question, picture string) {
 		return
 	}
 	b.BotColorMessage("Осталось 20 секунд", "", "#00ff00")
-	b.BotMessage("Повторяю вопрос: "+question, picture)
+	b.BotColorMessage("Повторяю вопрос:", "", "#00ff00")
+	b.BotColorMessage(question, picture, "#ff0000")
 	reason = b.Sleep(b.delay3)
 	if reason != sleepReasonNormal {
 		return
@@ -115,21 +132,36 @@ func (b *Bot) StartTimer(question, picture string) {
 
 //BotMessage ...
 func (b *Bot) BotMessage(title, image string) {
-	b.BotColorMessage(title, image, "#ff0000")
+	params := slack.NewPostMessageParameters()
+	params.AsUser = true
+	params.UnfurlMedia = true
+	params.UnfurlLinks = true
+	params.Markdown = true
+	params.Attachments = []slack.Attachment{
+		slack.Attachment{
+			// Title: title,
+			// Text:       "*" + title + "*",
+			ImageURL:   image,
+			MarkdownIn: []string{"text", "pretext", "fields"},
+		},
+	}
+	b.rtm.PostMessage(b.channel, title, params)
 }
 
 //BotColorMessage ...
 func (b *Bot) BotColorMessage(title, image, color string) {
-	params := slack.PostMessageParameters{
-		Text: title,
-		Attachments: []slack.Attachment{
-			slack.Attachment{
-				Color: color,
-				Title: title,
-				// Text:       "*" + title + "*",
-				ImageURL:   image,
-				MarkdownIn: []string{"text", "pretext", "fields"},
-			},
+	params := slack.NewPostMessageParameters()
+	params.AsUser = true
+	params.UnfurlMedia = true
+	params.UnfurlLinks = true
+	params.Markdown = true
+	params.Attachments = []slack.Attachment{
+		slack.Attachment{
+			Color: color,
+			Title: title,
+			// Text:       "*" + title + "*",
+			ImageURL:   image,
+			MarkdownIn: []string{"text", "pretext", "fields"},
 		},
 	}
 	b.rtm.PostMessage(b.channel, "", params)
@@ -162,9 +194,50 @@ func (b *Bot) Cancel() {
 	b.cancel = cancel
 }
 
+//CheckCaptain ...
+func (b *Bot) CheckCaptain(userID string) bool {
+	if b.captain == "" {
+		return true
+	}
+	if b.captain == userID {
+		return true
+	}
+	b.BotMessage(fmt.Sprintf("Капитан игры - %s. Поменяйте капитана командой !капитан @notabene(или другой ник). Уберите капитана командой: !капитан (без ника)",
+		b.captainUsername), "")
+	return false
+}
+
+//SetCaptainCommand ...
+func (b *Bot) SetCaptainCommand(cmd string) {
+	cmd = strings.TrimSpace(cmd)
+	if cmd == "!капитан" {
+		b.captain = ""
+		b.captainUsername = ""
+		b.BotMessage("Капитан убран", "")
+		return
+	}
+	captainRE := regexp.MustCompile(`<@(.*?)>`)
+	match := captainRE.FindStringSubmatch(cmd)
+	if match == nil {
+		b.BotMessage("Неправильное имя юзера (например @notabene). !капитан - без ника, убирает капитана", "")
+		return
+	}
+	fmt.Println(match)
+	b.captain = match[1]
+	user, err := b.rtm.GetUserInfo(b.captain)
+	if err != nil {
+		fmt.Println(err)
+		b.BotMessage("Неправильное имя юзера (например @notabene). !капитан - без ника, убирает капитана", "")
+		return
+	}
+	fmt.Println(user.Name)
+	b.captainUsername = user.Name
+	b.BotMessage(fmt.Sprintf("Капитан - %s", b.captainUsername), "")
+}
+
 //TellScore ...
 func (b *Bot) TellScore() {
-	b.BotColorMessage(fmt.Sprintf("Счет (верно/неверно) %d / %d", b.scoreRight, b.scoreWrong), "", "#00ff00")
+	b.BotMessage(fmt.Sprintf("Счет (верно/неверно) %d / %d. Всего вопросов: %d. Капитан - %s", b.scoreRight, b.scoreWrong, b.totalQuestions, b.captainUsername), "")
 }
 
 //IncScoreRight ...
