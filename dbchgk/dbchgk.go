@@ -1,6 +1,7 @@
 package dbchgk
 
 import (
+	"crypto/tls"
 	"encoding/xml"
 	"errors"
 	"fmt"
@@ -16,12 +17,12 @@ import (
 var picRE = regexp.MustCompile(`\(pic: (.*?)\)`)
 
 var kandQRE = regexp.MustCompile(`(?s)<strong>Вопрос \d+:(.+?)<div style="display:none`)
-var kandARE = regexp.MustCompile(`(?s)<strong>Ответ.*?:<\/strong>(.+?)<a id=`)
+var kandARE = regexp.MustCompile(`(?s)<strong>Ответ:<\/strong>(.+?)<a id=`)
 var kandIMGRE = regexp.MustCompile(`(?s)<img src = "(.+?)"`)
 
-var customQRE = regexp.MustCompile(`(?s)<p>(Вопрос)?\s*\d+\.(.*?)Ответ.*?:`)
+var customQRE = regexp.MustCompile(`(?s)<p>(Вопрос)?\s*\d+\.(.*?)Ответ\b`)
 var customAddRE = regexp.MustCompile(`(?s)Автор: .*?<\/p>(.+)`)
-var customARE = regexp.MustCompile(`(?s)Ответ:(.*?)Автор`)
+var customARE = regexp.MustCompile(`(?s)Ответ\b(.*?)Автор\b`)
 var customIMGRE = regexp.MustCompile(`(?s)<img.*?src="(.*?)"`)
 
 //Question ...
@@ -69,7 +70,11 @@ func LoadSuite(url, gameType, cmd string) (*Suite, error) {
 }
 
 func loadData(url string) ([]byte, error) {
-	resp, err := http.Get(url)
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+	client := &http.Client{Transport: tr}
+	resp, err := client.Get(url)
 	if err != nil {
 		return nil, err
 	}
